@@ -83,6 +83,7 @@ def game_loop():
     rect_x = SCREEN_WIDTH // 2
     rect_y = SCREEN_HEIGHT // 4  # Spawn near the top
     rect_vel_y = 0
+    rect_vel_x = 5  # Initial horizontal velocity
 
     # Ball position
     ball_x = random.randint(0, SCREEN_WIDTH - BALL_SIZE)
@@ -101,19 +102,13 @@ def game_loop():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-
-        # Step 5: Game logic
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT] and rect_x > 0:
-            rect_x -= 5
-        if keys[pygame.K_RIGHT] and rect_x < SCREEN_WIDTH - RECT_SIZE:
-            rect_x += 5
-        if keys[pygame.K_UP]:
-            rect_vel_y = JUMP_STRENGTH
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                rect_vel_y = JUMP_STRENGTH
 
         # Apply gravity
         rect_vel_y += GRAVITY
         rect_y += rect_vel_y
+        rect_x += rect_vel_x
 
         # Check for collision with the bottom of the screen
         if rect_y > SCREEN_HEIGHT - RECT_SIZE:
@@ -122,6 +117,10 @@ def game_loop():
         # Check for collision with the top of the screen
         if rect_y < 0:
             main_menu()
+
+        # Check for collision with the left and right walls
+        if rect_x <= 0 or rect_x >= SCREEN_WIDTH - RECT_SIZE:
+            rect_vel_x = -rect_vel_x  # Reverse direction
 
         # Check for collision with the ball
         if (rect_x < ball_x + BALL_SIZE and

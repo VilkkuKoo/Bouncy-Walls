@@ -16,9 +16,7 @@ Bouncy Walls is a simple game developed using Python and Pygame. The player cont
 
 ## Controls
 
-- Left Arrow: Move left
-- Right Arrow: Move right
-- Up Arrow: Jump
+- Jump/Hop: Mouse Left
 
 ## Installation
 
