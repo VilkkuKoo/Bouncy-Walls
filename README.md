@@ -29,8 +29,10 @@ Bouncy Walls is a simple game developed using Python and Pygame. The player cont
    ```
 ## How to Play
 
-1. Run the game script:
-
+1. Run the game script while you are in the games files:
+       ```sh
+   python main.py
+   ```
 2. On the main menu, click "Play" to start the game.
 3. Use the arrow keys to move the red square and collect the blue balls.
 4. The game will return to the main menu if the player touches the top or bottom of the screen.
@@ -47,3 +49,7 @@ The main game script contains the following key components:
 - Score Tracking: Increments the score each time a ball is collected and displays the current score on the screen.
 - Contributing
 - Contributions are welcome! If you have any suggestions or improvements, feel free to open an issue or submit a pull request.
+
+## Future Of This Game
+
+I'll develop this whenever i feel like it and have the time. in he beginning it's going to be python only. BUT i'd like to get this on mobile (atleast on Android, maybe iOS if it's "easy")
