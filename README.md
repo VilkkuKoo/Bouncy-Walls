@@ -50,4 +50,4 @@ The main game script contains the following key components:
 
 ## Future Of This Game
 
-I'll develop this whenever i feel like it and have the time. in he beginning it's going to be python only. BUT i'd like to get this on mobile (atleast on Android, maybe iOS if it's "easy")
+I'll develop this whenever i feel like it and have the time. in he beginning it's going to be python only. Buti'd like to get this on mobile (atleast on Android, maybe iOS if it's "easy"). Also i promise to **NEWER** add ads or any kind of a paywall to this game. I personally hate ads with my life.
