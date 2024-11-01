@@ -1,10 +1,9 @@
-# Step 2: Initialize Pygame and set up the game window
 import pygame
 import sys
 
 pygame.init()
 
-#Constansts
+# Constants
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 RECT_SIZE = 50
@@ -22,7 +21,6 @@ pygame.display.set_caption("Bouncy Walls - Python Edition")
 rect_x = SCREEN_WIDTH // 2
 rect_y = SCREEN_HEIGHT // 2
 rect_vel_y = 0
-on_ground = False
 
 # Step 3: Create the main game loop
 clock = pygame.time.Clock()
@@ -40,9 +38,8 @@ while running:
         rect_x -= 5
     if keys[pygame.K_RIGHT] and rect_x < SCREEN_WIDTH - RECT_SIZE:
         rect_x += 5
-    if keys[pygame.K_UP] and on_ground:
+    if keys[pygame.K_UP]:
         rect_vel_y = JUMP_STRENGTH
-        on_ground = False
 
     # Apply gravity
     rect_vel_y += GRAVITY
@@ -52,7 +49,11 @@ while running:
     if rect_y > SCREEN_HEIGHT - RECT_SIZE:
         rect_y = SCREEN_HEIGHT - RECT_SIZE
         rect_vel_y = 0
-        on_ground = True
+
+    # Check for collision with the top of the screen
+    if rect_y < 0:
+        rect_y = 0
+        rect_vel_y = 0
 
     # Step 6: Rendering
     screen.fill(BG_COLOR)
