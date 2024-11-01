@@ -1,2 +1,2 @@
 # Bouncy-Walls
-Bouncy Walls - An Open Source Mobile Game
+Bouncy Walls - An Open Source Game
