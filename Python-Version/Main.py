@@ -8,7 +8,7 @@ pygame.init()
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 RECT_SIZE = 50
-BALL_SIZE = 20
+BALL_SIZE = 30
 RECT_COLOR = (255, 0, 0)
 BALL_COLOR = (0, 0, 255)
 BG_COLOR = (0, 0, 0)
@@ -20,6 +20,7 @@ BUTTON_HOVER_COLOR = (0, 200, 0)
 BUTTON_TEXT_COLOR = (255, 255, 255)
 FONT_SIZE = 36
 TITLE_FONT_SIZE = 48
+BALL_SPAWN_MARGIN = 50  # Margin from the top and bottom for ball spawning
 
 # Set up the display
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -85,7 +86,7 @@ def game_loop():
 
     # Ball position
     ball_x = random.randint(0, SCREEN_WIDTH - BALL_SIZE)
-    ball_y = random.randint(0, SCREEN_HEIGHT - BALL_SIZE)
+    ball_y = random.randint(BALL_SPAWN_MARGIN, SCREEN_HEIGHT - BALL_SIZE - BALL_SPAWN_MARGIN)
 
     # Score
     score = 0
@@ -129,7 +130,7 @@ def game_loop():
             rect_y + RECT_SIZE > ball_y):
             score += 1
             ball_x = random.randint(0, SCREEN_WIDTH - BALL_SIZE)
-            ball_y = random.randint(0, SCREEN_HEIGHT - BALL_SIZE)
+            ball_y = random.randint(BALL_SPAWN_MARGIN, SCREEN_HEIGHT - BALL_SIZE - BALL_SPAWN_MARGIN)
 
         # Step 6: Rendering
         screen.fill(BG_COLOR)
