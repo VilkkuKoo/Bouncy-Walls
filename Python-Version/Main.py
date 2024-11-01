@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 
 pygame.init()
 
@@ -7,7 +8,9 @@ pygame.init()
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 RECT_SIZE = 50
+BALL_SIZE = 20
 RECT_COLOR = (255, 0, 0)
+BALL_COLOR = (0, 0, 255)
 BG_COLOR = (0, 0, 0)
 FPS = 60
 GRAVITY = 0.2  # Lower gravity for a more "floaty" effect
@@ -80,6 +83,13 @@ def game_loop():
     rect_y = SCREEN_HEIGHT // 4  # Spawn near the top
     rect_vel_y = 0
 
+    # Ball position
+    ball_x = random.randint(0, SCREEN_WIDTH - BALL_SIZE)
+    ball_y = random.randint(0, SCREEN_HEIGHT - BALL_SIZE)
+
+    # Score
+    score = 0
+
     # Step 3: Create the main game loop
     clock = pygame.time.Clock()
     running = True
@@ -112,9 +122,20 @@ def game_loop():
         if rect_y < 0:
             main_menu()
 
+        # Check for collision with the ball
+        if (rect_x < ball_x + BALL_SIZE and
+            rect_x + RECT_SIZE > ball_x and
+            rect_y < ball_y + BALL_SIZE and
+            rect_y + RECT_SIZE > ball_y):
+            score += 1
+            ball_x = random.randint(0, SCREEN_WIDTH - BALL_SIZE)
+            ball_y = random.randint(0, SCREEN_HEIGHT - BALL_SIZE)
+
         # Step 6: Rendering
         screen.fill(BG_COLOR)
         pygame.draw.rect(screen, RECT_COLOR, (rect_x, rect_y, RECT_SIZE, RECT_SIZE))
+        pygame.draw.ellipse(screen, BALL_COLOR, (ball_x, ball_y, BALL_SIZE, BALL_SIZE))
+        draw_text(f'Score: {score}', font, BUTTON_TEXT_COLOR, screen, 70, 30)
         pygame.display.flip()
 
         # Cap the frame rate
