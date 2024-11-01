@@ -10,12 +10,13 @@ RECT_SIZE = 50
 RECT_COLOR = (255, 0, 0)
 BG_COLOR = (0, 0, 0)
 FPS = 60
-GRAVITY = 0.5
-JUMP_STRENGTH = -10
+GRAVITY = 0.2  # Lower gravity for a more "floaty" effect
+JUMP_STRENGTH = -5
 BUTTON_COLOR = (0, 255, 0)
 BUTTON_HOVER_COLOR = (0, 200, 0)
 BUTTON_TEXT_COLOR = (255, 255, 255)
 FONT_SIZE = 36
+TITLE_FONT_SIZE = 48
 
 # Set up the display
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -23,6 +24,7 @@ pygame.display.set_caption("Bouncy Walls - Python Edition")
 
 # Font
 font = pygame.font.Font(None, FONT_SIZE)
+title_font = pygame.font.Font(None, TITLE_FONT_SIZE)
 
 # Button positions and sizes
 play_button_rect = pygame.Rect((SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 - 50, 200, 50))
@@ -39,6 +41,10 @@ def main_menu():
         screen.fill(BG_COLOR)
 
         mx, my = pygame.mouse.get_pos()
+
+        # Draw title
+        draw_text('Bouncy Walls', title_font, BUTTON_TEXT_COLOR, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 4)
+        draw_text('Python Edition', font, BUTTON_TEXT_COLOR, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 4 + 50)
 
         # Draw buttons
         if play_button_rect.collidepoint((mx, my)):
@@ -71,7 +77,7 @@ def main_menu():
 def game_loop():
     # Rectangle position and velocity
     rect_x = SCREEN_WIDTH // 2
-    rect_y = SCREEN_HEIGHT // 2
+    rect_y = SCREEN_HEIGHT // 4  # Spawn near the top
     rect_vel_y = 0
 
     # Step 3: Create the main game loop
@@ -82,7 +88,8 @@ def game_loop():
         # Step 4: Handle events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                sys.exit()
 
         # Step 5: Game logic
         keys = pygame.key.get_pressed()
@@ -99,13 +106,11 @@ def game_loop():
 
         # Check for collision with the bottom of the screen
         if rect_y > SCREEN_HEIGHT - RECT_SIZE:
-            rect_y = SCREEN_HEIGHT - RECT_SIZE
-            rect_vel_y = 0
+            main_menu()
 
         # Check for collision with the top of the screen
         if rect_y < 0:
-            rect_y = 0
-            rect_vel_y = 0
+            main_menu()
 
         # Step 6: Rendering
         screen.fill(BG_COLOR)
