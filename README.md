@@ -32,7 +32,7 @@ Bouncy Walls is a simple game developed using Python and Pygame. The player cont
    python main.py
    ```
 2. On the main menu, click "Play" to start the game.
-3. Use the arrow keys to move the red square and collect the blue balls.
+3. Use the arrow keys to move the player and collect the blue balls.
 4. The game will return to the main menu if the player touches the top or bottom of the screen.
 
 ## Code Overview

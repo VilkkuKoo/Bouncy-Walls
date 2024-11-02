@@ -1,7 +1,8 @@
 import pygame
-import sys
 import random
+import sys
 
+# Initialize Pygame
 pygame.init()
 
 # Load sound effects
@@ -14,24 +15,28 @@ click_sound = pygame.mixer.Sound('Python-Version/Assets/Sounds/blipSelect.wav')
 # Constants
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-RECT_SIZE = 50
 BALL_SIZE = 30
-RECT_COLOR = (255, 0, 0)
-BALL_COLOR = (0, 0, 255)
-BG_COLOR = (0, 0, 0)
-FPS = 60
-GRAVITY = 0.2  # Lower gravity for a more "floaty" effect
+BALL_SPAWN_MARGIN = 50
+GRAVITY = 0.2
 JUMP_STRENGTH = -5
-BUTTON_COLOR = (0, 255, 0)
-BUTTON_HOVER_COLOR = (0, 200, 0)
+FPS = 60
+BG_COLOR = (0, 0, 0)
+BALL_COLOR = (0, 255, 0)
+BUTTON_COLOR = (100, 100, 100)
+BUTTON_HOVER_COLOR = (150, 150, 150)
 BUTTON_TEXT_COLOR = (255, 255, 255)
 FONT_SIZE = 36
-TITLE_FONT_SIZE = 48
-BALL_SPAWN_MARGIN = 50  # Margin from the top and bottom for ball spawning
+TITLE_FONT_SIZE = 72
+PLAYER_SIZE = (50, 50)  # New constant for player size
 
 # Set up the display
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Bouncy Walls - Python Edition")
+
+# Load and resize player image
+player_image_original = pygame.image.load('Python-Version/Assets/sprites/player1.png')
+player_image_original = pygame.transform.scale(player_image_original, PLAYER_SIZE)
+player_rect = player_image_original.get_rect()
 
 # Font
 font = pygame.font.Font(None, FONT_SIZE)
@@ -88,6 +93,7 @@ def main_menu():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if play_button_rect.collidepoint(event.pos):
+                    print("Play button clicked")  # Debug print
                     click_sound.play()
                     game_loop()
                 if mute_button_rect.collidepoint(event.pos):
@@ -106,11 +112,18 @@ def main_menu():
         pygame.time.Clock().tick(FPS)
 
 def game_loop():
+    global player_image_original  # Declare player_image_original as global
+    print("Game loop started")  # Debug print
+
+    # Reset player image to original
+    player_image = player_image_original.copy()
+    player_rect = player_image.get_rect()
+
     # Rectangle position and velocity
     rect_x = SCREEN_WIDTH // 2
-    rect_y = SCREEN_HEIGHT // 4  # Spawn near the top
+    rect_y = SCREEN_HEIGHT // 2  # Spawn in the middle of the screen
     rect_vel_y = 0
-    rect_vel_x = 5  # Initial horizontal velocity
+    rect_vel_x = -5  # Initial horizontal velocity
 
     # Ball position
     ball_x = random.randint(0, SCREEN_WIDTH - BALL_SIZE)
@@ -122,6 +135,7 @@ def game_loop():
     # Step 3: Create the main game loop
     clock = pygame.time.Clock()
     running = True
+    flipped = False  # Track if the player image is flipped
 
     while running:
         # Step 4: Handle events
@@ -138,21 +152,26 @@ def game_loop():
         rect_y += rect_vel_y
         rect_x += rect_vel_x
 
+        # Update player rect position
+        player_rect.topleft = (rect_x, rect_y)
+
         # Check for collision with the top or the bottom of the screen
-        if rect_y > SCREEN_HEIGHT - RECT_SIZE or rect_y < 0:
+        if rect_y > SCREEN_HEIGHT - player_rect.height or rect_y < 0:
             death_sound.play()
-            main_menu()
+            running = False  # Exit the game loop and return to the main menu
 
         # Check for collision with the left and right walls
-        if rect_x <= 0 or rect_x >= SCREEN_WIDTH - RECT_SIZE:
+        if rect_x <= 0 or rect_x >= SCREEN_WIDTH - player_rect.width:
             rect_vel_x = -rect_vel_x  # Reverse direction
+            flipped = not flipped  # Toggle the flipped state
+            player_image = pygame.transform.flip(player_image, True, False)  # Mirror the player image
             bounce_sound.play()
 
         # Check for collision with the ball
         if (rect_x < ball_x + BALL_SIZE and
-            rect_x + RECT_SIZE > ball_x and
+            rect_x + player_rect.width > ball_x and
             rect_y < ball_y + BALL_SIZE and
-            rect_y + RECT_SIZE > ball_y):
+            rect_y + player_rect.height > ball_y):
             score += 1
             ball_x = random.randint(0, SCREEN_WIDTH - BALL_SIZE)
             ball_y = random.randint(BALL_SPAWN_MARGIN, SCREEN_HEIGHT - BALL_SIZE - BALL_SPAWN_MARGIN)
@@ -160,7 +179,7 @@ def game_loop():
 
         # Step 6: Rendering
         screen.fill(BG_COLOR)
-        pygame.draw.rect(screen, RECT_COLOR, (rect_x, rect_y, RECT_SIZE, RECT_SIZE))
+        screen.blit(player_image, player_rect)
         pygame.draw.ellipse(screen, BALL_COLOR, (ball_x, ball_y, BALL_SIZE, BALL_SIZE))
         draw_text(f'Score: {score}', font, BUTTON_TEXT_COLOR, screen, 70, 30)
         pygame.display.flip()
@@ -168,9 +187,8 @@ def game_loop():
         # Cap the frame rate
         clock.tick(FPS)
 
-    # Step 7: Cleanup
-    pygame.quit()
-    sys.exit()
+    print("Game loop ended")  # Debug print
+    main_menu()
 
 # Start the game with the main menu
 main_menu()
