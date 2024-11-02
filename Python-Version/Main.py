@@ -39,7 +39,11 @@ title_font = pygame.font.Font(None, TITLE_FONT_SIZE)
 
 # Button positions and sizes
 play_button_rect = pygame.Rect((SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 - 50, 200, 50))
-quit_button_rect = pygame.Rect((SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 + 20, 200, 50))
+mute_button_rect = pygame.Rect((SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 + 20, 200, 50))
+quit_button_rect = pygame.Rect((SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 + 90, 200, 50))
+
+# Mute state
+is_muted = False
 
 def draw_text(text, font, color, surface, x, y):
     text_obj = font.render(text, True, color)
@@ -48,6 +52,7 @@ def draw_text(text, font, color, surface, x, y):
     surface.blit(text_obj, text_rect)
 
 def main_menu():
+    global is_muted
     while True:
         screen.fill(BG_COLOR)
 
@@ -63,12 +68,18 @@ def main_menu():
         else:
             pygame.draw.rect(screen, BUTTON_COLOR, play_button_rect)
 
+        if mute_button_rect.collidepoint((mx, my)):
+            pygame.draw.rect(screen, BUTTON_HOVER_COLOR, mute_button_rect)
+        else:
+            pygame.draw.rect(screen, BUTTON_COLOR, mute_button_rect)
+
         if quit_button_rect.collidepoint((mx, my)):
             pygame.draw.rect(screen, BUTTON_HOVER_COLOR, quit_button_rect)
         else:
             pygame.draw.rect(screen, BUTTON_COLOR, quit_button_rect)
 
         draw_text('Play', font, BUTTON_TEXT_COLOR, screen, play_button_rect.centerx, play_button_rect.centery)
+        draw_text('Mute' if not is_muted else 'Unmute', font, BUTTON_TEXT_COLOR, screen, mute_button_rect.centerx, mute_button_rect.centery)
         draw_text('Quit', font, BUTTON_TEXT_COLOR, screen, quit_button_rect.centerx, quit_button_rect.centery)
 
         for event in pygame.event.get():
@@ -79,6 +90,14 @@ def main_menu():
                 if play_button_rect.collidepoint(event.pos):
                     click_sound.play()
                     game_loop()
+                if mute_button_rect.collidepoint(event.pos):
+                    is_muted = not is_muted
+                    pygame.mixer.music.set_volume(0 if is_muted else 1)
+                    bounce_sound.set_volume(0 if is_muted else 1)
+                    pickup_sound.set_volume(0 if is_muted else 1)
+                    click_sound.set_volume(0 if is_muted else 1)
+                    jump_sound.set_volume(0 if is_muted else 1)
+                    death_sound.set_volume(0 if is_muted else 1)
                 if quit_button_rect.collidepoint(event.pos):
                     pygame.quit()
                     sys.exit()
