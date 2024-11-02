@@ -4,6 +4,13 @@ import random
 
 pygame.init()
 
+# Load sound effects
+jump_sound = pygame.mixer.Sound('Python-Version/Assets/Sounds/jump.wav')
+pickup_sound = pygame.mixer.Sound('Python-Version/Assets/Sounds/pickupCoin.wav')
+bounce_sound = pygame.mixer.Sound('Python-Version/Assets/Sounds/bounce.wav')
+death_sound = pygame.mixer.Sound('Python-Version/Assets/Sounds/hitHurt.wav')
+click_sound = pygame.mixer.Sound('Python-Version/Assets/Sounds/blipSelect.wav')
+
 # Constants
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -70,6 +77,7 @@ def main_menu():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if play_button_rect.collidepoint(event.pos):
+                    click_sound.play()
                     game_loop()
                 if quit_button_rect.collidepoint(event.pos):
                     pygame.quit()
@@ -104,23 +112,22 @@ def game_loop():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 rect_vel_y = JUMP_STRENGTH
+                jump_sound.play()
 
         # Apply gravity
         rect_vel_y += GRAVITY
         rect_y += rect_vel_y
         rect_x += rect_vel_x
 
-        # Check for collision with the bottom of the screen
-        if rect_y > SCREEN_HEIGHT - RECT_SIZE:
-            main_menu()
-
-        # Check for collision with the top of the screen
-        if rect_y < 0:
+        # Check for collision with the top or the bottom of the screen
+        if rect_y > SCREEN_HEIGHT - RECT_SIZE or rect_y < 0:
+            death_sound.play()
             main_menu()
 
         # Check for collision with the left and right walls
         if rect_x <= 0 or rect_x >= SCREEN_WIDTH - RECT_SIZE:
             rect_vel_x = -rect_vel_x  # Reverse direction
+            bounce_sound.play()
 
         # Check for collision with the ball
         if (rect_x < ball_x + BALL_SIZE and
@@ -130,6 +137,7 @@ def game_loop():
             score += 1
             ball_x = random.randint(0, SCREEN_WIDTH - BALL_SIZE)
             ball_y = random.randint(BALL_SPAWN_MARGIN, SCREEN_HEIGHT - BALL_SIZE - BALL_SPAWN_MARGIN)
+            pickup_sound.play()
 
         # Step 6: Rendering
         screen.fill(BG_COLOR)
