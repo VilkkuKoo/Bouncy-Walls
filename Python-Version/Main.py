@@ -50,6 +50,10 @@ quit_button_rect = pygame.Rect((SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 + 90
 # Mute state
 is_muted = False
 
+# Score and high score
+score = 0
+high_score = 0
+
 def draw_text(text, font, color, surface, x, y):
     text_obj = font.render(text, True, color)
     text_rect = text_obj.get_rect()
@@ -57,11 +61,14 @@ def draw_text(text, font, color, surface, x, y):
     surface.blit(text_obj, text_rect)
 
 def main_menu():
-    global is_muted
+    global is_muted, high_score
     while True:
         screen.fill(BG_COLOR)
 
         mx, my = pygame.mouse.get_pos()
+
+        # Draw high score
+        draw_text(f'High Score: {high_score}', font, BUTTON_TEXT_COLOR, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 8)
 
         # Draw title
         draw_text('Bouncy Walls', title_font, BUTTON_TEXT_COLOR, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 4)
@@ -112,7 +119,7 @@ def main_menu():
         pygame.time.Clock().tick(FPS)
 
 def game_loop():
-    global player_image_original  # Declare player_image_original as global
+    global player_image_original, score, high_score  # Declare global variables
     print("Game loop started")  # Debug print
 
     # Reset player image to original
@@ -129,7 +136,7 @@ def game_loop():
     ball_x = random.randint(0, SCREEN_WIDTH - BALL_SIZE)
     ball_y = random.randint(BALL_SPAWN_MARGIN, SCREEN_HEIGHT - BALL_SIZE - BALL_SPAWN_MARGIN)
 
-    # Score
+    # Reset score
     score = 0
 
     # Step 3: Create the main game loop
@@ -181,11 +188,16 @@ def game_loop():
         screen.fill(BG_COLOR)
         screen.blit(player_image, player_rect)
         pygame.draw.ellipse(screen, BALL_COLOR, (ball_x, ball_y, BALL_SIZE, BALL_SIZE))
-        draw_text(f'Score: {score}', font, BUTTON_TEXT_COLOR, screen, 70, 30)
+        draw_text(f'Score: {score}', font, BUTTON_TEXT_COLOR, screen, 100, 30)  # Adjusted position
+        draw_text(f'High Score: {high_score}', font, BUTTON_TEXT_COLOR, screen, 100, 70)  # Adjusted position
         pygame.display.flip()
 
         # Cap the frame rate
         clock.tick(FPS)
+
+    # Update high score if current score is higher
+    if score > high_score:
+        high_score = score
 
     print("Game loop ended")  # Debug print
     main_menu()
