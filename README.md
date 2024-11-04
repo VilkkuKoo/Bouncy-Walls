@@ -11,7 +11,7 @@ Bouncy Walls is a simple game developed using Python and Pygame. The player cont
 - Simple and intuitive controls
 - Randomly spawning collectible balls
 - Score tracking
-- Main menu with "Play" and "Quit" options
+- Main menu with "Play", "Mute" and "Quit" options
 - Game title and subtitle displayed on the main menu
 
 ## Controls
