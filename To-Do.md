@@ -1,0 +1,2 @@
+ - .Exe with pyinstaller
+ - Better color theme, possibly easily user changeble
